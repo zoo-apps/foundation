@@ -1,9 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 // Image isn't used in this component
 // import Image from "next/image";
-import "@google/model-viewer/dist/model-viewer";
 // Head isn't used in this component
 // import Head from "next/head";
+
+// <model-viewer> renders through three's WebGL2 renderer; model-viewer 3.x throws
+// upgrading the element where WebGL2 is missing, so there it stays undefined.
+let defined: Promise<unknown> | undefined;
+const defineModelViewer = () => {
+  if (!defined) {
+    const gl = document.createElement("canvas").getContext("webgl2");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    defined = gl ? import("@google/model-viewer/dist/model-viewer") : Promise.resolve();
+  }
+  return defined;
+};
+
 const ModelViewer = ({
   glb = "/models/Tiger/TIGER_BABY.glb",
   usdz = "/models/Tiger/TIGER_BABY.usdz",
@@ -48,7 +60,7 @@ const ModelViewer = ({
         ></model-viewer>`;
 
   useEffect(() => {
-    return () => {};
+    defineModelViewer();
   }, []);
 
   return (
