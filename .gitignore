@@ -41,3 +41,8 @@ contracts/typechain-types/
 
 # Turbo
 .turbo
+
+# Local symlinks to LLM.md
+CLAUDE.md
+AGENTS.md
+GEMINI.md
